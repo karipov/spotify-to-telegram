@@ -4,10 +4,12 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+flake8 = "*"
 
 [packages]
 spotipy = "*"
 python-telegram-bot = "*"
+google-api-python-client = "*"
 
 [requires]
 python_version = "3.7"
