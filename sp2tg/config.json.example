@@ -1,0 +1,14 @@
+{
+    "TELEGRAM": {
+        "KEY": "Bot API Key goes here",
+        "CHANNEL_ID": ""
+    },
+    "YOUTUBE": {
+        "KEY": "Youtube Data API developer key (not Oauth)"
+    },
+    "SPOTIFY": {
+        "ID": "application id",
+        "SECRET": "application secret",
+        "USER": "your spotify username"
+    }
+}
