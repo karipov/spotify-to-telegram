@@ -1,22 +1,27 @@
-import sys
+import json
+import logging
+from pathlib import Path
+
 import spotipy
 import spotipy.util as util
 
 from telegram.ext import Updater, CommandHandler
-import logging
 
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                     level=logging.DEBUG)
 
-USERNAME = 'komron_aripov'
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    level=logging.DEBUG
+)
+
+config = json.load(Path.cwd().joinpath('sp2tg/config.json'))
 
 def show_tracks(update, context):
     print("call")
     token = util.prompt_for_user_token(
-        USERNAME,
+        config['SPOTIFY']['USER'],
         scope='user-library-read',
-        client_id='a2d67890944043a89bc49b968674464a',
-        client_secret='8964fab6a6ee48468946d7c3be674e5e',
+        client_id=config['SPOTIFY']['ID'],
+        client_secret=config['SPOTIFY']['SECRET'],
         redirect_uri='http://localhost:8888'
     )
     print(token)
