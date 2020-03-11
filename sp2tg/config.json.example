@@ -1,7 +1,7 @@
 {
     "TELEGRAM": {
         "KEY": "Bot API Key goes here",
-        "CHANNEL_ID": ""
+        "CHANNEL_ID": "Channel ID to post to goes here"
     },
     "YOUTUBE": {
         "KEY": "Youtube Data API developer key (not Oauth)"

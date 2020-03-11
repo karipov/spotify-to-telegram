@@ -1,7 +1,8 @@
 # Configuration data
 sp2tg/config.json
 
-# Spotipy
+# Program libraries
+sp2tg/downloads
 .cache-*
 
 # Byte-compiled / optimized / DLL files
