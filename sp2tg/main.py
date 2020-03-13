@@ -8,10 +8,14 @@ import spotipy.util as util
 
 from telegram.ext import Updater, CommandHandler
 
+import googleapiclient.discovery
+import googleapiclient.errors
+
+
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.DEBUG
+    level=logging.INFO
 )
 
 CONFIG = json.load(open(Path.cwd().joinpath('sp2tg/config.json'), 'r'))
@@ -21,6 +25,28 @@ CACHE_PATH = str(Path.cwd().joinpath(f"sp2tg/.cache-{CONFIG['SPOTIFY']['USER']}"
 
 if not os.path.exists(DOWNLOAD_FOLDER):
     os.makedirs(DOWNLOAD_FOLDER)
+
+
+def get_link(search_request: str) -> str:
+    api_service_name = "youtube"
+    api_version = "v3"
+
+    youtube = googleapiclient.discovery.build(
+        api_service_name, api_version,
+        developerKey=CONFIG['YOUTUBE']['KEY']
+    )
+
+    request = youtube.search().list(
+        part="id",
+        maxResults=1,
+        q=search_request
+    )
+    try:
+        video_id = request.execute()['items'][0]['id']['videoId']
+    except IndexError:
+        video_id = '00000' # unavailable video
+    return f"https://www.youtube.com/watch?v={video_id}"
+
 
 def show_tracks(context):
     token = util.prompt_for_user_token(
@@ -41,14 +67,17 @@ def show_tracks(context):
 
     if data['RECENT_SONG'] == search_request:
         return
+    
+    logging.info(f"NEW SONG FOUND: {search_request}")
     data['RECENT_SONG'] = search_request
+    video_link = get_link(search_request)
 
     with open(SONG_INFO_PATH, 'w') as songsData:
         json.dump(data, songsData)
 
     context.bot.send_message(
         chat_id=CONFIG['TELEGRAM']['CHANNEL_ID'],
-        text=search_request
+        text=search_request + '\n' + video_link
     )
 
 
@@ -56,6 +85,6 @@ def show_tracks(context):
 updater = Updater(CONFIG['TELEGRAM']['KEY'], use_context=True)
 jobs = updater.job_queue
 
-fetch_songs = jobs.run_repeating(show_tracks, interval=60, first=0)
+fetch_songs = jobs.run_repeating(show_tracks, interval=180, first=0)
 
 updater.start_polling()
